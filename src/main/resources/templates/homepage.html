@@ -1,0 +1,19 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <title>ShopNest | Home</title>
+    <link rel="stylesheet" th:href="@{/toast.css}">
+</head>
+<body>
+
+    <h1>Welcome to ShopNest!</h1>
+
+    <!-- Toast trigger -->
+    <div id="toastData"
+         th:data-success="${success}"
+         th:data-error="${error}"
+         style="display:none">
+    </div>
+    <script th:src="@{/toast.js}"></script>
+</body>
+</html>

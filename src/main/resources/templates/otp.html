@@ -1,0 +1,154 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ShopNest | Verify OTP</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;600&family=Plus+Jakarta+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" th:href="@{/otp.css}">
+    <script th:src="@{/otp.js}" defer></script>
+    <link rel="stylesheet" th:href="@{/toast.css}">
+</head>
+<body>
+	<!-- Reset timer when resend succeeds -->
+	<script th:if="${success != null}">
+	    sessionStorage.setItem('otpStartTime', Date.now().toString());
+	</script>
+	
+	<!-- Reset timer on very first load — no error and no success means fresh arrival -->
+	<script th:if="${error == null and success == null}">
+	    sessionStorage.setItem('otpStartTime', Date.now().toString());
+	</script>
+		
+    <!-- Floating background icons -->
+    <div class="bg-layer">
+        <span class="bg-icon" style="--x:8%;--y:12%;--d:0s">🛍</span>
+        <span class="bg-icon" style="--x:88%;--y:18%;--d:1.5s">📦</span>
+        <span class="bg-icon" style="--x:6%;--y:78%;--d:3s">🛒</span>
+        <span class="bg-icon" style="--x:90%;--y:75%;--d:2s">🏷</span>
+        <span class="bg-icon" style="--x:50%;--y:90%;--d:1s">💳</span>
+    </div>
+
+    <main class="page-center">
+        <div class="card">
+
+            <!-- Brand -->
+            <div class="brand">
+                <span class="brand-icon">🛒</span>
+                <span class="brand-name">ShopNest</span>
+            </div>
+
+            <!-- Shield illustration -->
+            <div class="shield-wrap">
+                <div class="shield-ring ring-3"></div>
+                <div class="shield-ring ring-2"></div>
+                <div class="shield-ring ring-1"></div>
+                <div class="shield-circle">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" class="shield-svg">
+                        <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/>
+                        <polyline points="9 12 11 14 15 10"/>
+                    </svg>
+                </div>
+            </div>
+
+            <h1 class="card-title">Enter Verification Code</h1>
+            <p class="card-subtitle">
+                We've sent a 6-digit OTP to your email address.<br>
+                <span class="subtitle-note">Check your inbox and enter the code below.</span>
+            </p>
+
+            <!-- Server error alert -->
+            <div class="alert alert-error" th:if="${error}" id="serverAlert">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                    <circle cx="12" cy="12" r="10"/>
+                    <line x1="12" y1="8" x2="12" y2="12"/>
+                    <line x1="12" y1="16" x2="12.01" y2="16"/>
+                </svg>
+                <span th:text="${error}"></span>
+            </div>
+
+            <!-- JS error alert -->
+            <div class="alert alert-error" id="jsAlert">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                    <circle cx="12" cy="12" r="10"/>
+                    <line x1="12" y1="8" x2="12" y2="12"/>
+                    <line x1="12" y1="16" x2="12.01" y2="16"/>
+                </svg>
+                <span id="jsAlertMsg"></span>
+            </div>
+	        <div class="alert alert-success server-alert" th:if="${success}" role="alert">
+			    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+			        <polyline points="20 6 9 17 4 12"/>
+			    </svg>
+			    <span th:text="${success}"></span>
+			</div>
+
+            <form id="otpForm"
+                  th:action="@{/user/verification/otp-verification}"
+                  method="post"
+                  novalidate>
+                <!-- Hidden field that holds the assembled 6-digit OTP -->
+                <input type="hidden" name="otp" id="otpHidden">
+
+                <!-- 6 individual digit boxes -->
+                <div class="otp-row" id="otpRow">
+                    <input type="text" class="otp-box" maxlength="1" inputmode="numeric" pattern="[0-9]" autocomplete="one-time-code" aria-label="OTP digit 1">
+                    <input type="text" class="otp-box" maxlength="1" inputmode="numeric" pattern="[0-9]" aria-label="OTP digit 2">
+                    <input type="text" class="otp-box" maxlength="1" inputmode="numeric" pattern="[0-9]" aria-label="OTP digit 3">
+                    <span class="otp-sep">—</span>
+                    <input type="text" class="otp-box" maxlength="1" inputmode="numeric" pattern="[0-9]" aria-label="OTP digit 4">
+                    <input type="text" class="otp-box" maxlength="1" inputmode="numeric" pattern="[0-9]" aria-label="OTP digit 5">
+                    <input type="text" class="otp-box" maxlength="1" inputmode="numeric" pattern="[0-9]" aria-label="OTP digit 6">
+                </div>
+
+                <p class="otp-hint" id="otpHint"></p>
+
+                <!-- Submit -->
+                <button type="submit" class="verify-btn" id="verifyBtn" disabled>
+                    <span class="btn-text">Verify Code</span>
+                    <span class="btn-icon">
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
+                            <path d="M5 12h14M12 5l7 7-7 7"/>
+                        </svg>
+                    </span>
+                    <span class="btn-loader"></span>
+                </button>
+	           
+	        </form>
+	         <div class="resend-wrap">
+				    <p class="resend-text">Didn't receive the code?</p>
+				    <div class="resend-row">
+				        <span class="timer-text" id="timerText">
+				            Resend in <strong id="countdown">10:00</strong>
+				        </span>
+				        <!-- ✅ Wrap in its own form -->
+				        <form th:action="@{/user/verification/resend-otp}" method="post">
+				            <button type="submit" class="resend-btn" id="resendBtn" disabled>
+				                Resend OTP
+				            </button>
+				        </form>
+				    </div>
+				</div>
+
+            <!-- Back link -->
+            <div class="back-link">
+                <a th:href="@{/user/verification/user-auth}">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
+                        <path d="M19 12H5M12 19l-7-7 7-7"/>
+                    </svg>
+                    Back to Email Verification
+                </a>
+            </div>
+
+        </div>
+    </main>
+    <div id="toastData"
+	     th:data-success="${success}"He
+	     style="display:none">
+	</div>
+	<script th:src="@{/toast.js}"></script>
+
+</body>
+</html>
