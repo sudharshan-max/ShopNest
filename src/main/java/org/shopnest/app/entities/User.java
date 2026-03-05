@@ -1,4 +1,4 @@
-package Com.ShopNest.App.Entities;
+package org.shopnest.app.entities;
 
 import jakarta.persistence.*;
 import java.time.LocalDateTime;

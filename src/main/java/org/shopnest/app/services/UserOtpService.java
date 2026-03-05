@@ -1,19 +1,20 @@
-package Com.ShopNest.App.Services;
+package org.shopnest.app.services;
 
 import java.time.LocalDateTime;
 import java.util.Random;
 
+import org.shopnest.app.dtos.UserOtpReq;
+import org.shopnest.app.entities.User;
+import org.shopnest.app.entities.UserOtp;
+import org.shopnest.app.repositories.UserOtpRepository;
+import org.shopnest.app.repositories.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.mail.MailSender;
 import org.springframework.mail.SimpleMailMessage;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 
-import Com.ShopNest.App.Dtos.UserOtpReq;
-import Com.ShopNest.App.Entities.User;
-import Com.ShopNest.App.Entities.UserOtp;
-import Com.ShopNest.App.Repositories.UserOtpRepository;
-import Com.ShopNest.App.Repositories.UserRepository;
+
 
 @Service
 public class UserOtpService {

@@ -1,5 +1,9 @@
-package Com.ShopNest.App.Controllers;
+package org.shopnest.app.controllers;
 
+import org.shopnest.app.dtos.UserOtpReq;
+import org.shopnest.app.dtos.UserPasswordChangeReq;
+import org.shopnest.app.entities.User;
+import org.shopnest.app.services.UserOtpService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -10,10 +14,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
-import Com.ShopNest.App.Dtos.UserOtpReq;
-import Com.ShopNest.App.Dtos.UserPasswordChangeReq;
-import Com.ShopNest.App.Entities.User;
-import Com.ShopNest.App.Services.UserOtpService;
+
 
 import jakarta.servlet.http.HttpSession;
 

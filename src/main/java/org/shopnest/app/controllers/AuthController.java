@@ -1,22 +1,17 @@
-package Com.ShopNest.App.Controllers;
-import java.util.HashMap;
-import java.util.Map;
+package org.shopnest.app.controllers;
 
-import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
+import org.shopnest.app.dtos.LoginRequest;
+import org.shopnest.app.entities.User;
+import org.shopnest.app.services.AuthService;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
-import Com.ShopNest.App.Dtos.LoginRequest;
-import Com.ShopNest.App.Entities.User;
-import Com.ShopNest.App.Services.AuthService;
+
 import jakarta.servlet.http.Cookie;
 import jakarta.servlet.http.HttpServletResponse;
 

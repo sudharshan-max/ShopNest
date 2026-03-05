@@ -1,10 +1,11 @@
-package Com.ShopNest.App.Repositories;
+package org.shopnest.app.repositories;
 
 import java.util.Optional;
 
+import org.shopnest.app.entities.User;
 import org.springframework.data.jpa.repository.JpaRepository;
 
-import Com.ShopNest.App.Entities.User;
+
 
 public interface UserRepository extends JpaRepository<User, Integer>{
 	Optional<User> findByemail(String email);

@@ -1,18 +1,16 @@
-package Com.ShopNest.App.Services;
+package org.shopnest.app.services;
 
 import java.time.LocalDateTime;
 import java.util.Date;
 
-
-
+import org.shopnest.app.entities.JWTToken;
+import org.shopnest.app.entities.User;
+import org.shopnest.app.repositories.JWTTokenRepository;
+import org.shopnest.app.repositories.UserRepository;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 
-import Com.ShopNest.App.Entities.JWTToken;
-import Com.ShopNest.App.Entities.User;
-import Com.ShopNest.App.Repositories.JWTTokenRepository;
-import Com.ShopNest.App.Repositories.UserRepository;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.SignatureAlgorithm;
 import io.jsonwebtoken.security.Keys;

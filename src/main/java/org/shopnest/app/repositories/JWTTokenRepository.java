@@ -1,10 +1,11 @@
-package Com.ShopNest.App.Repositories;
+package org.shopnest.app.repositories;
 
+import org.shopnest.app.entities.JWTToken;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 
-import Com.ShopNest.App.Entities.JWTToken;
+
 
 public interface JWTTokenRepository extends JpaRepository<JWTToken, Integer> {
 

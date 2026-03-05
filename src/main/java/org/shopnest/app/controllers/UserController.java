@@ -1,14 +1,15 @@
-package Com.ShopNest.App.Controllers;
+package org.shopnest.app.controllers;
 
+import org.shopnest.app.entities.Role;
+import org.shopnest.app.entities.User;
+import org.shopnest.app.services.UserServices;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
-import Com.ShopNest.App.Entities.Role;
-import Com.ShopNest.App.Entities.User;
-import Com.ShopNest.App.Services.UserServices;
+
 
 
 @Controller

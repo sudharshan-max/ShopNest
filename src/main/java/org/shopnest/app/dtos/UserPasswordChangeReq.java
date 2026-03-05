@@ -1,4 +1,4 @@
-package Com.ShopNest.App.Dtos;
+package org.shopnest.app.dtos;
 
 public class UserPasswordChangeReq {
 	private String newPassword;
