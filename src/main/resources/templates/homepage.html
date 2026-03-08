@@ -1,19 +1,213 @@
 <!DOCTYPE html>
 <html lang="en" xmlns:th="http://www.thymeleaf.org">
 <head>
-    <title>ShopNest | Home</title>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ShopNest</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@400;500;600;700&family=DM+Sans:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" th:href="@{/homepage.css}">
     <link rel="stylesheet" th:href="@{/toast.css}">
 </head>
 <body>
 
-    <h1>Welcome to ShopNest!</h1>
+<!-- ═══════════════ NAVBAR ═══════════════ -->
+<nav class="navbar" id="navbar">
+    <div class="nav-container">
 
-    <!-- Toast trigger -->
-    <div id="toastData"
-         th:data-success="${success}"
-         th:data-error="${error}"
-         style="display:none">
+        <a href="/home" class="nav-brand">
+            <div class="brand-icon">🛒</div>
+            <span class="brand-name">ShopNest</span>
+        </a>
+
+        <div class="nav-search">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <circle cx="11" cy="11" r="8"/><path d="m21 21-4.35-4.35"/>
+            </svg>
+            <input type="text" id="searchInput" placeholder="Search products…" autocomplete="off">
+        </div>
+
+        <div class="nav-right">
+            <div class="nav-user" id="navUser">
+                <div class="user-avatar"
+     				th:text="${username != null ? #strings.substring(username,0,1).toUpperCase() : 'U'}">U</div>
+				<span class="user-name" 
+     			th:text="${username != null ? username : 'User'}">User</span>
+                <svg class="chevron" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                    <path d="m6 9 6 6 6-6"/>
+                </svg>
+                <div class="user-dropdown">
+                    <a href="/api/users/profile">
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
+                        My Profile
+                    </a>
+                    <a href="/api/orders">
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M6 2 3 6v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V6l-3-4z"/><line x1="3" y1="6" x2="21" y2="6"/></svg>
+                        My Orders
+                    </a>
+                    <div class="dropdown-divider"></div>
+                    <a href="/api/auth/logout" class="logout-link">
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"/><polyline points="16 17 21 12 16 7"/><line x1="21" y1="12" x2="9" y2="12"/></svg>
+                        Sign Out
+                    </a>
+                </div>
+            </div>
+
+            <a href="/cart" class="cart-btn">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                    <circle cx="9" cy="21" r="1"/><circle cx="20" cy="21" r="1"/>
+                    <path d="M1 1h4l2.68 13.39a2 2 0 0 0 2 1.61h9.72a2 2 0 0 0 2-1.61L23 6H6"/>
+                </svg>
+                <span class="cart-count" id="cartCount">0</span>
+            </a>
+        </div>
+
+        <button class="hamburger" id="hamburger">
+            <span></span><span></span><span></span>
+        </button>
     </div>
-    <script th:src="@{/toast.js}"></script>
+
+    <div class="mobile-menu" id="mobileMenu">
+        <input type="text" placeholder="Search products…" class="mobile-search-input">
+        <a href="/api/users/profile">My Profile</a>
+        <a href="/api/orders">My Orders</a>
+        <a href="/cart">Cart</a>
+        <a href="/api/auth/logout" class="logout-link">Sign Out</a>
+    </div>
+</nav>
+
+<!-- ═══════════════ HERO ═══════════════ -->
+<section class="hero">
+    <div class="hero-bg">
+        <div class="hero-glow g1"></div>
+        <div class="hero-glow g2"></div>
+        <div class="hero-grid-overlay"></div>
+    </div>
+
+    <div class="hero-content">
+        <div class="hero-pill">✨ New arrivals every week</div>
+        <h1 class="hero-title">
+            Everything You Need,
+            <em>Delivered Fast.</em>
+        </h1>
+        <p class="hero-sub">
+            Thousands of products across all categories.
+            Best prices. Fastest delivery. Hassle-free returns.
+        </p>
+        <div class="hero-actions">
+            <button class="hero-btn-primary" onclick="scrollToProducts()">
+                Shop Now
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
+                    <path d="M5 12h14M12 5l7 7-7 7"/>
+                </svg>
+            </button>
+            <button class="hero-btn-secondary" onclick="scrollToCategories()">
+                Browse Categories
+            </button>
+        </div>
+        <div class="hero-trust">
+            <span>🚚 Free delivery above ₹499</span>
+            <span>↩ 30-day returns</span>
+            <span>🔒 Secure payments</span>
+        </div>
+    </div>
+
+    <div class="hero-visual">
+        <div class="hero-orbit-ring r1"></div>
+        <div class="hero-orbit-ring r2"></div>
+        <div class="hero-center-circle">🛒</div>
+        <div class="hero-float-card fc1">
+            <span>👕</span>
+            <div><p>Fashion</p><small>Trending now</small></div>
+        </div>
+        <div class="hero-float-card fc2">
+            <span>📱</span>
+            <div><p>Electronics</p><small>Top deals</small></div>
+        </div>
+        <div class="hero-float-card fc3">
+            <span>🏠</span>
+            <div><p>Home</p><small>New arrivals</small></div>
+        </div>
+    </div>
+</section>
+
+<!-- ═══════════════ CATEGORIES ═══════════════ -->
+<section class="categories-section" id="categoriesSection">
+    <div class="section-container">
+        <div class="section-header">
+            <span class="section-label">Shop By</span>
+            <h2 class="section-title">Categories</h2>
+        </div>
+        <!-- Thymeleaf renders category tabs from DB -->
+        <div class="cat-tabs-wrap" id="categoryTabs">
+            <button class="cat-tab active" data-category="">
+                All Products
+            </button>
+            <button th:each="cat : ${categories}"
+                    class="cat-tab"
+                    th:data-category="${cat.categoryName}"
+                    th:text="${cat.categoryName}">
+                Category
+            </button>
+        </div>
+    </div>
+</section>
+
+<!-- ═══════════════ PRODUCTS ═══════════════ -->
+<section class="products-section" id="productsSection">
+    <div class="section-container">
+        <div class="products-top-bar">
+            <h2 class="products-title" id="productsTitle">All Products</h2>
+            <span class="products-count" id="productsCount"></span>
+        </div>
+
+        <!-- JS renders product cards here -->
+        <div class="products-grid" id="productsGrid">
+            <!-- Initial skeleton loading state -->
+            <div class="skeleton-card" th:each="i : ${#numbers.sequence(1,8)}">
+                <div class="skel-img"></div>
+                <div class="skel-body">
+                    <div class="skel-line w70"></div>
+                    <div class="skel-line w50"></div>
+                    <div class="skel-line w40"></div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- ═══════════════ FOOTER ═══════════════ -->
+<footer class="footer">
+    <div class="footer-inner">
+        <div class="footer-brand">
+            <span>🛒 ShopNest</span>
+            <p>Your favourite brands, all in one place.</p>
+        </div>
+        <div class="footer-links">
+            <div class="f-col">
+                <h5>Shop</h5>
+                <a href="/home">All Products</a>
+                <a href="/cart">Cart</a>
+            </div>
+            <div class="f-col">
+                <h5>Account</h5>
+                <a href="/api/users/profile">My Profile</a>
+                <a href="/api/orders">My Orders</a>
+            </div>
+            <div class="f-col">
+                <h5>Help</h5>
+                <a href="#">Contact Us</a>
+                <a href="#">Returns Policy</a>
+            </div>
+        </div>
+    </div>
+    <div class="footer-bottom">© 2026 ShopNest. All rights reserved.</div>
+</footer>
+
+<!-- Toast -->
+<div id="toastData" th:data-success="${success}" th:data-error="${error}" style="display:none"></div>
+<script th:src="@{/homepage.js}"></script>
+<script th:src="@{/toast.js}"></script>
 </body>
 </html>

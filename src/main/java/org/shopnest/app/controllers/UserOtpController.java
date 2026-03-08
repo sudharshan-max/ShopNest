@@ -19,25 +19,25 @@ import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 import jakarta.servlet.http.HttpSession;
 
 @Controller
-@RequestMapping("/user/verification")
+@RequestMapping("/api/password-reset")
 public class UserOtpController {
 
     @Autowired
     private UserOtpService userOtpServ;
 
 
-    @GetMapping("/user-auth")
+    @GetMapping
     public String showEmailPage() {
         return "email-verification";
     }
     
-    @GetMapping("/otp-page")
+    @GetMapping("/otp")
     public String showOtpPage() {
         return "otp";
     }
 
 
-    @PostMapping("/email-verification")
+    @PostMapping("/email")
     public String emailVerification(@ModelAttribute UserOtpReq userOtpReq,
                                     HttpSession session,
                                     RedirectAttributes redirectAttributes, Model model) {
@@ -46,7 +46,7 @@ public class UserOtpController {
 
             session.setAttribute("reset_email", user.getEmail());
             redirectAttributes.addFlashAttribute("success", "Email verified! Please enter the OTP sent to your inbox.");
-            return "redirect:/user/verification/otp-page"; 
+            return "redirect:/api/password-reset/otp"; 
 
         } catch (Exception e) {
             model.addAttribute("error",e.getMessage());
@@ -55,7 +55,7 @@ public class UserOtpController {
     }
 
 
-    @PostMapping("/otp-verification")
+    @PostMapping("/otp")
     public String checkOtp(@ModelAttribute UserOtpReq userOtpReq,
                            HttpSession session,
                            RedirectAttributes redirectAttributes, Model model) {
@@ -72,7 +72,7 @@ public class UserOtpController {
             session.setAttribute("otp_verified", true);
             redirectAttributes.addFlashAttribute("success", "otp verified successfuly");
 
-            return "redirect:/user/verification/reset";
+            return "redirect:/api/password-reset/new";
 
         } catch (Exception e) {
             model.addAttribute("error",e.getMessage());
@@ -81,7 +81,7 @@ public class UserOtpController {
     }
 
 
-    @PostMapping("/reset-password")
+    @PostMapping
     public String resetPassword(@ModelAttribute UserPasswordChangeReq userPasschange,
                                 HttpSession session,
                                 RedirectAttributes redirectAttributes,Model model) {
@@ -102,7 +102,7 @@ public class UserOtpController {
             session.removeAttribute("otp_verified");
 
             redirectAttributes.addFlashAttribute("success", "Password reset successful! Please log in.");
-            return "redirect:/api/users/login";
+            return "redirect:/api/auth/login";
 
         } catch (Exception e) {
             model.addAttribute("error",e.getMessage());
@@ -110,7 +110,7 @@ public class UserOtpController {
         }
     }
     
-    @PostMapping("/resend-otp")
+    @PostMapping("otp/resend")
     public String resendOtp(HttpSession session,
                             RedirectAttributes redirectAttributes, Model model) {
         try {
@@ -125,7 +125,7 @@ public class UserOtpController {
             userOtpServ.getUserWithEmail(email);
 
             redirectAttributes.addFlashAttribute("success", "New OTP sent to your email!");
-            return "redirect:/user/verification/otp-page";
+            return "redirect:/api/password-reset/otp";
 
         } catch (Exception e) {
             System.out.println("=== RESEND ERROR: " + e.getMessage()); 
@@ -134,7 +134,7 @@ public class UserOtpController {
         }
     }
     
-    @GetMapping("/reset")
+    @GetMapping("/new")
     public String showResetPage() {
         return "reset-password";
     }

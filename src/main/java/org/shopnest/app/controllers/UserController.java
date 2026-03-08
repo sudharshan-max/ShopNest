@@ -30,7 +30,7 @@ public class UserController {
     }
     
 
-    @PostMapping("/user-registration")
+    @PostMapping
     public String registerUser(@ModelAttribute User user,Model model, RedirectAttributes redirectAttributes) {
     	user.setRole(Role.CUSTOMER);
         try {

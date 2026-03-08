@@ -86,7 +86,7 @@
 			</div>
 
             <form id="otpForm"
-                  th:action="@{/user/verification/otp-verification}"
+                  th:action="@{/api/password-reset/otp}"
                   method="post"
                   novalidate>
                 <!-- Hidden field that holds the assembled 6-digit OTP -->
@@ -124,7 +124,7 @@
 				            Resend in <strong id="countdown">10:00</strong>
 				        </span>
 				        <!-- ✅ Wrap in its own form -->
-				        <form th:action="@{/user/verification/resend-otp}" method="post">
+				        <form th:action="@{/api/password-reset/otp/resend}" method="post">
 				            <button type="submit" class="resend-btn" id="resendBtn" disabled>
 				                Resend OTP
 				            </button>

@@ -26,7 +26,11 @@ public class AuthController {
     public AuthController(AuthService authService) {
         this.authService = authService;
     }
-
+    @GetMapping("/login")
+    public String showLoginPage() {
+    	return "login";
+    }
+    
     @PostMapping("/login")
     public String login(@ModelAttribute LoginRequest loginRequest,
                                    HttpServletResponse response, RedirectAttributes redirectAttributes, Model model) {
@@ -62,7 +66,9 @@ public class AuthController {
     
     @GetMapping("/home")
     public String home() {
-    	return "homepage";
+    	return "redirect:/api/products/home";
     }
+    
+    
     
 }
