@@ -1,0 +1,294 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Checkout — ShopNest</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@400;500;600;700&family=DM+Sans:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <script src="https://checkout.razorpay.com/v1/checkout.js"></script>
+    <link rel="stylesheet" href="/checkout.css">
+</head>
+<body>
+
+<!-- ═══════════════ NAVBAR ═══════════════ -->
+<nav class="navbar" id="navbar">
+    <div class="nav-container">
+
+        <a href="/api/products/home" class="nav-brand">
+            <div class="brand-icon">🛒</div>
+            <span class="brand-name">ShopNest</span>
+        </a>
+
+        <!-- Progress Steps -->
+        <div class="nav-steps">
+            <div class="step done">
+                <div class="step-circle">✓</div>
+                <span>Cart</span>
+            </div>
+            <div class="step-connector done"></div>
+            <div class="step active">
+                <div class="step-circle">2</div>
+                <span>Checkout</span>
+            </div>
+            <div class="step-connector"></div>
+            <div class="step">
+                <div class="step-circle">3</div>
+                <span>Confirmation</span>
+            </div>
+        </div>
+
+        <div class="nav-right">
+            <div class="nav-user">
+                <div class="user-avatar"
+                     th:text="${username != null ? #strings.substring(username,0,1).toUpperCase() : 'U'}">U</div>
+                <span th:text="${username != null ? username : 'User'}">User</span>
+            </div>
+        </div>
+
+    </div>
+</nav>
+
+<!-- ═══════════════ MAIN ═══════════════ -->
+<main class="checkout-main">
+    <div class="checkout-container">
+
+        <div class="page-header">
+            <a href="/cart" class="back-link">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                    <path d="M19 12H5M12 5l-7 7 7 7"/>
+                </svg>
+                Back to Cart
+            </a>
+            <div class="page-header-text">
+                <span class="section-label">Final Step</span>
+                <h1 class="page-title">Complete Your Order</h1>
+            </div>
+        </div>
+
+        <div class="checkout-layout">
+
+            <!-- ══ LEFT — Order Summary ══ -->
+            <div class="checkout-left">
+
+                <div class="card">
+                    <div class="card-header">
+                        <h3 class="card-title">
+                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                <path d="M9 5H7a2 2 0 0 0-2 2v12a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2V7a2 2 0 0 0-2-2h-2"/>
+                                <rect x="9" y="3" width="6" height="4" rx="1"/>
+                            </svg>
+                            Order Summary
+                        </h3>
+                        <a href="/cart" class="edit-link">
+                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                <path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"/>
+                                <path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"/>
+                            </svg>
+                            Edit
+                        </a>
+                    </div>
+
+                    <!-- Items list — JS renders here -->
+                    <div class="items-list" id="itemsList">
+                        <!-- Skeleton -->
+                        <div class="skeleton-item" th:each="i : ${#numbers.sequence(1,3)}">
+                            <div class="skel skel-img"></div>
+                            <div class="skel-info">
+                                <div class="skel skel-line" style="width:65%"></div>
+                                <div class="skel skel-line" style="width:40%"></div>
+                            </div>
+                            <div class="skel skel-price"></div>
+                        </div>
+                    </div>
+
+                    <div class="divider"></div>
+
+                    <!-- Price breakdown -->
+                    <div class="price-rows" id="priceRows">
+                        <div class="price-row">
+                            <span>Subtotal</span>
+                            <span id="subtotalVal">—</span>
+                        </div>
+                        <div class="price-row">
+                            <span>
+                                Shipping Charges
+                                <span class="free-note" id="freeNote" style="display:none">
+                                    (Free above ₹499)
+                                </span>
+                            </span>
+                            <span id="shippingVal">—</span>
+                        </div>
+                        <div class="price-row grand-total">
+                            <span>Total Amount</span>
+                            <span id="totalVal">—</span>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Trust badges -->
+                <div class="trust-strip">
+                    <div class="trust-item">
+                        <span class="trust-icon">🔒</span>
+                        <div>
+                            <p>Secure Payment</p>
+                            <small>256-bit SSL</small>
+                        </div>
+                    </div>
+                    <div class="trust-item">
+                        <span class="trust-icon">↩</span>
+                        <div>
+                            <p>Easy Returns</p>
+                            <small>30-day policy</small>
+                        </div>
+                    </div>
+                    <div class="trust-item">
+                        <span class="trust-icon">🚚</span>
+                        <div>
+                            <p>Fast Delivery</p>
+                            <small>2–5 business days</small>
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+
+            <!-- ══ RIGHT — Payment ══ -->
+            <div class="checkout-right">
+
+                <div class="card payment-card">
+
+                    <div class="card-header">
+                        <h3 class="card-title">
+                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                <rect x="1" y="4" width="22" height="16" rx="2"/>
+                                <line x1="1" y1="10" x2="23" y2="10"/>
+                            </svg>
+                            Payment
+                        </h3>
+                        <div class="payment-methods">
+                            <span>UPI</span>
+                            <span>Cards</span>
+                            <span>NetBanking</span>
+                            <span>Wallets</span>
+                        </div>
+                    </div>
+
+                    <!-- Razorpay badge -->
+                    <div class="razorpay-badge">
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
+                            <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/>
+                        </svg>
+                        Secured by <strong>Razorpay</strong> — India's most trusted payment gateway
+                    </div>
+
+                    <!-- User info -->
+                    <div class="user-info-box">
+                        <div class="user-info-icon">
+                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/>
+                                <circle cx="12" cy="7" r="4"/>
+                            </svg>
+                        </div>
+                        <div>
+                            <small>Paying as</small>
+                            <p th:text="${username != null ? username : 'User'}">User</p>
+                        </div>
+                    </div>
+
+                    <!-- Error box — hidden by default -->
+                    <div class="error-box" id="errorBox" style="display:none">
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                            <circle cx="12" cy="12" r="10"/>
+                            <line x1="12" y1="8" x2="12" y2="12"/>
+                            <line x1="12" y1="16" x2="12.01" y2="16"/>
+                        </svg>
+                        <span id="errorMsg">Something went wrong. Please try again.</span>
+                    </div>
+
+                    <!-- Pay button -->
+                    <button class="pay-btn" id="payBtn" onclick="initiatePayment()" disabled>
+                        <span id="payBtnContent">
+                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
+                                <rect x="1" y="4" width="22" height="16" rx="2"/>
+                                <line x1="1" y1="10" x2="23" y2="10"/>
+                            </svg>
+                            Loading…
+                        </span>
+                    </button>
+
+                    <p class="legal-note">
+                        By proceeding you agree to our
+                        <a href="#">Terms of Service</a> &
+                        <a href="#">Privacy Policy</a>
+                    </p>
+
+                </div>
+
+                <!-- Test mode helper -->
+                <div class="test-card">
+                    <div class="test-card-header">
+                        <span class="test-pill">TEST MODE</span>
+                        <span>Use these Razorpay test credentials</span>
+                    </div>
+                    <table class="test-table">
+                        <tr>
+                            <td>Card Number</td>
+                            <td><code>4111 1111 1111 1111</code></td>
+                        </tr>
+                        <tr>
+                            <td>Expiry</td>
+                            <td><code>Any future date</code></td>
+                        </tr>
+                        <tr>
+                            <td>CVV</td>
+                            <td><code>Any 3 digits</code></td>
+                        </tr>
+                        <tr>
+                            <td>OTP</td>
+                            <td><code>1234</code></td>
+                        </tr>
+                    </table>
+                </div>
+
+            </div>
+
+        </div>
+    </div>
+</main>
+
+<!-- ═══════════════ SUCCESS OVERLAY ═══════════════ -->
+<div class="success-overlay" id="successOverlay">
+    <div class="success-modal">
+        <div class="success-check">✓</div>
+        <h2>Payment Successful!</h2>
+        <p>Your order has been confirmed.</p>
+        <div class="success-order-id" id="successOrderId"></div>
+        <div class="success-actions">
+            <a href="/api/products/home" class="btn-primary">Continue Shopping</a>
+            <a href="/api/orders" class="btn-secondary">View Orders</a>
+        </div>
+    </div>
+</div>
+
+<!-- ═══════════════ FAILURE OVERLAY ═══════════════ -->
+<div class="failure-overlay" id="failureOverlay">
+    <div class="failure-modal">
+        <div class="failure-icon">✕</div>
+        <h2>Payment Failed</h2>
+        <p id="failureMsg">Something went wrong with your payment.</p>
+        <div class="success-actions">
+            <button onclick="closeFailure()" class="btn-primary">Try Again</button>
+            <a href="/cart" class="btn-secondary">Back to Cart</a>
+        </div>
+    </div>
+</div>
+
+<!-- Hidden data for JS -->
+<div id="userData"    th:data-username="${username}"       style="display:none"></div>
+<div id="rzpData"     th:data-key="${razorpayKeyId}"       style="display:none"></div>
+
+<script src="/checkout.js"></script>
+</body>
+</html>

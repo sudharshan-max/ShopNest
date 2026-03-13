@@ -48,13 +48,13 @@ public class AuthController {
             cookie.setSecure(false); // Set to true if using HTTPS
             cookie.setPath("/");
             cookie.setMaxAge(3600); // 1 hour
-            cookie.setDomain("localhost");
+//            cookie.setDomain("localhost");
 
             response.addCookie(cookie);
 
             // Optional but useful for SameSite=None
-            response.addHeader("Set-Cookie",
-                    String.format("authToken=%s; HttpOnly; Path=/; Max-Age=3600; SameSite=None", token));
+//            response.addHeader("Set-Cookie",
+//                    String.format("authToken=%s; HttpOnly; Path=/; Max-Age=3600; SameSite=None", token));
             redirectAttributes.addFlashAttribute("success", "Logged in successfully! Welcome back.");
             return "redirect:/api/auth/home";
 

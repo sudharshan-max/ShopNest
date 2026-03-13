@@ -1,3 +1,10 @@
+// ═══════════════════════════════════════════════
+// SHOPNEST CART PAGE — cart.js
+// Bugs fixed:
+// 1. Qty read from DOM dynamically — not hardcoded in onclick
+// 2. Increment/decrement now accurate
+// 3. Stock limit enforced correctly
+// ═══════════════════════════════════════════════
 
 let cartData = [];
 
@@ -61,7 +68,12 @@ function renderCart() {
     renderSummary(cartData);
 }
 
-
+// ═══════════════════════════════════════════════
+// BUILD CART ITEM CARD
+// ✅ FIX 1 & 2: onclick only passes productId + delta
+//              qty is read LIVE from DOM in changeQuantity()
+// ✅ FIX 3: stock stored in data-stock on the card element
+// ═══════════════════════════════════════════════
 function buildItemCard(item, index) {
     const imgHtml = item.image_url && item.image_url !== 'default-image-url'
         ? `<img src="${escHtml(item.image_url)}"
@@ -97,6 +109,7 @@ function buildItemCard(item, index) {
 
                 <div class="qty-controls">
 
+                    <!-- ✅ FIX 1: No currentQty in onclick — read from DOM live -->
                     <button class="qty-btn minus"
                             onclick="changeQuantity(${item.product_id}, -1)"
                             title="${currentQty === 1 ? 'Remove item' : 'Decrease quantity'}">
@@ -105,6 +118,7 @@ function buildItemCard(item, index) {
 
                     <span class="qty-value" id="qty-${item.product_id}">${currentQty}</span>
 
+                    <!-- ✅ FIX 2 & 3: No currentQty in onclick — disable if at stock limit -->
                     <button class="qty-btn plus"
                             onclick="changeQuantity(${item.product_id}, +1)"
                             ${atMaxStock ? 'disabled' : ''}
@@ -172,7 +186,12 @@ function renderSummary(products) {
     if (checkoutBtn) checkoutBtn.disabled = false;
 }
 
-
+// ═══════════════════════════════════════════════
+// CHANGE QUANTITY
+// ✅ FIX 1: currentQty read LIVE from DOM span — never stale
+// ✅ FIX 2: delta applied to live value — always accurate
+// ✅ FIX 3: stock checked from card's data-stock attribute
+// ═══════════════════════════════════════════════
 function changeQuantity(productId, delta) {
 
     // ✅ Read current qty LIVE from the DOM — not from onclick argument
@@ -328,7 +347,7 @@ function updateCartBadge(count) {
 
 function proceedToCheckout() {
     if (cartData.length === 0) return;
-    alert('Payment integration coming soon!');
+    window.location.href = '/checkout';
 }
 
 function showCartError() {

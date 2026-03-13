@@ -22,7 +22,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Component;
 
-@WebFilter(urlPatterns = {"/api/*", "/admin/*"})
+@WebFilter(urlPatterns = {"/api/*", "/admin/*", "/cart", "/checkout"})
 public class AuthenticationFilter implements Filter {
 
     private static final Logger logger = LoggerFactory.getLogger(AuthenticationFilter.class);
