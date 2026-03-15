@@ -16,10 +16,10 @@
 <nav class="navbar" id="navbar">
     <div class="nav-container">
 
-        <a href="/home" class="nav-brand">
+        <p class="nav-brand">
             <div class="brand-icon">🛒</div>
             <span class="brand-name">ShopNest</span>
-        </a>
+        </p>
 
         <div class="nav-search">
             <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
@@ -42,7 +42,7 @@
                         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
                         My Profile
                     </a>
-                    <a href="/api/orders">
+                    <a href="/api/view-orders">
                         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M6 2 3 6v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V6l-3-4z"/><line x1="3" y1="6" x2="21" y2="6"/></svg>
                         My Orders
                     </a>
@@ -71,7 +71,7 @@
     <div class="mobile-menu" id="mobileMenu">
         <input type="text" placeholder="Search products…" class="mobile-search-input">
         <a href="/api/users/profile">My Profile</a>
-        <a href="/api/orders">My Orders</a>
+        <a href="/api/view-orders">My Orders</a>
         <a href="/cart">Cart</a>
         <a href="/api/auth/logout" class="logout-link">Sign Out</a>
     </div>
@@ -187,13 +187,13 @@
         <div class="footer-links">
             <div class="f-col">
                 <h5>Shop</h5>
-                <a href="/home">All Products</a>
-                <a href="/cart">Cart</a>
+                <a href="#" onclick="scrollToProducts(); return false;">All Products</a>
+                <a href="/api/cart">Cart</a>
             </div>
             <div class="f-col">
                 <h5>Account</h5>
                 <a href="/api/users/profile">My Profile</a>
-                <a href="/api/orders">My Orders</a>
+                <a href="/api/view-orders">My Orders</a>
             </div>
             <div class="f-col">
                 <h5>Help</h5>

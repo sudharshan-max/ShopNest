@@ -1,0 +1,182 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>My Orders — ShopNest</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@400;600;700&family=DM+Sans:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="/orders.css">
+</head>
+<body>
+
+<!-- ═══════════════ NAVBAR ═══════════════ -->
+<nav class="navbar">
+    <div class="nav-inner">
+
+        <!-- Brand -->
+        <a href="/api/products/home" class="nav-brand">
+            <span class="brand-logo">🛒</span>
+            <span class="brand-name">ShopNest</span>
+        </a>
+
+        <!-- Desktop right section -->
+        <div class="nav-actions">
+
+            <!-- User dropdown -->
+            <div class="nav-user-wrap">
+                <div class="nav-user-trigger">
+                    <div class="user-avatar"
+                         th:text="${username != null ? #strings.substring(username,0,1).toUpperCase() : 'U'}">U</div>
+                    <span class="user-name"
+                          th:text="${username != null ? username : 'User'}">User</span>
+                    <svg class="chevron-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
+                        <path d="m6 9 6 6 6-6"/>
+                    </svg>
+                </div>
+                <div class="nav-dropdown">
+                    <a href="/api/products/home" class="dropdown-item">
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                            <path d="m3 9 9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/>
+                        </svg>
+                        Home
+                    </a>
+                    <a href="/api/users/profile" class="dropdown-item">
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                            <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/>
+                        </svg>
+                        My Profile
+                    </a>
+                    <div class="dropdown-sep"></div>
+                    <a href="/api/auth/logout" class="dropdown-item danger">
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                            <path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"/>
+                            <polyline points="16 17 21 12 16 7"/>
+                            <line x1="21" y1="12" x2="9" y2="12"/>
+                        </svg>
+                        Sign Out
+                    </a>
+                </div>
+            </div>
+
+            <!-- Cart -->
+            <a href="/api/cart" class="cart-icon-btn">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                    <circle cx="9" cy="21" r="1"/><circle cx="20" cy="21" r="1"/>
+                    <path d="M1 1h4l2.68 13.39a2 2 0 0 0 2 1.61h9.72a2 2 0 0 0 2-1.61L23 6H6"/>
+                </svg>
+                <!-- id="cartBadge" — updated by orders.js loadCartBadge() -->
+                <span class="cart-badge" id="cartBadge" style="display:none">0</span>
+            </a>
+        </div>
+
+        <!-- Hamburger (mobile only) -->
+        <button class="hamburger-btn" id="hamburgerBtn" aria-label="Menu">
+            <span></span><span></span><span></span>
+        </button>
+    </div>
+
+    <!-- Mobile menu -->
+    <div class="mobile-nav" id="mobileNav">
+        <a href="/api/products/home">Home</a>
+        <a href="/api/users/profile">My Profile</a>
+        <a href="/api/cart">Cart</a>
+        <a href="/api/auth/logout" class="danger">Sign Out</a>
+    </div>
+</nav>
+
+<!-- ═══════════════ HERO ═══════════════ -->
+<div class="page-hero">
+    <div class="hero-content">
+        <div>
+            <span class="eyebrow">Account</span>
+            <h1 class="hero-title">My Orders</h1>
+            <p class="hero-sub">All your successful purchases, in one place</p>
+        </div>
+        <a href="/api/products/home" class="shop-more-btn">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <circle cx="9" cy="21" r="1"/><circle cx="20" cy="21" r="1"/>
+                <path d="M1 1h4l2.68 13.39a2 2 0 0 0 2 1.61h9.72a2 2 0 0 0 2-1.61L23 6H6"/>
+            </svg>
+            Shop More
+        </a>
+    </div>
+</div>
+
+<!-- ═══════════════ MAIN ═══════════════ -->
+<main class="main-wrap">
+    <div class="content-box">
+
+        <!-- Stats bar — shown by renderStats() via id="statsBar" -->
+        <div class="stats-row" id="statsBar" style="display:none">
+            <div class="stat-cell">
+                <span class="stat-val" id="totalOrdersCount">0</span>
+                <span class="stat-key">Orders</span>
+            </div>
+            <div class="stat-sep"></div>
+            <div class="stat-cell">
+                <span class="stat-val" id="totalItemsCount">0</span>
+                <span class="stat-key">Items</span>
+            </div>
+            <div class="stat-sep"></div>
+            <div class="stat-cell">
+                <span class="stat-val" id="totalSpentAmount">₹0</span>
+                <span class="stat-key">Total Spent</span>
+            </div>
+        </div>
+
+        <!-- Loading — shown by showState('loading') via id="loadingState" -->
+        <div class="center-state" id="loadingState">
+            <div class="spin-ring"></div>
+            <p>Loading your orders…</p>
+        </div>
+
+        <!-- Error — shown by showState('error') via id="errorState" -->
+        <div class="center-state" id="errorState" style="display:none">
+            <span class="big-icon">😕</span>
+            <h3>Something went wrong</h3>
+            <p id="errorMsg">We couldn't load your orders. Please try again.</p>
+            <button class="cta-btn" onclick="loadOrders()">Try Again</button>
+        </div>
+
+        <!-- Empty — shown by showState('empty') via id="emptyState" -->
+        <div class="center-state" id="emptyState" style="display:none">
+            <span class="big-icon">📦</span>
+            <h3>No orders yet</h3>
+            <p>You haven't placed any orders yet. Time to start shopping!</p>
+            <a href="/api/products/home" class="cta-btn">Start Shopping</a>
+        </div>
+
+        <!-- Orders list — populated by renderOrders() via id="ordersList" -->
+        <div class="orders-list" id="ordersList" style="display:none"></div>
+
+    </div>
+</main>
+
+<!-- ═══════════════ FOOTER ═══════════════ -->
+<footer class="site-footer">
+    <div class="footer-grid">
+        <div class="footer-brand-col">
+            <p class="footer-logo">🛒 ShopNest</p>
+            <p class="footer-tagline">Your favourite brands, all in one place.</p>
+        </div>
+        <div class="footer-links-group">
+            <div class="footer-col">
+                <h5>Shop</h5>
+                <a href="/api/products/home">All Products</a>
+                <a href="/api/cart">Cart</a>
+            </div>
+            <div class="footer-col">
+                <h5>Account</h5>
+                <a href="/api/users/profile">My Profile</a>
+                <a href="/api/view-orders">My Orders</a>
+            </div>
+        </div>
+    </div>
+    <div class="footer-bar">© 2026 ShopNest. All rights reserved.</div>
+</footer>
+
+<script src="/orders.js"></script>
+</body>
+</html>

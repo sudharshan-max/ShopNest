@@ -70,7 +70,14 @@ public class AuthenticationFilter implements Filter {
 
         // ✅ Allow public pages
         if (isPublicPath(requestURI)) {
-            chain.doFilter(request, response);
+            String token = getAuthTokenFromCookies(httpRequest);
+            if (token != null && authService.validateToken(token)) {
+                String username = authService.extractUsername(token);
+                userRepository.findByusername(username).ifPresent(user ->
+                    httpRequest.setAttribute("authenticatedUser", user)
+                );
+            }
+            chain.doFilter(request, response); // always let through regardless
             return;
         }
 

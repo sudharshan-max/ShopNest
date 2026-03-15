@@ -13,6 +13,7 @@ import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 
 import jakarta.servlet.http.Cookie;
+import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 
 
@@ -48,13 +49,13 @@ public class AuthController {
             cookie.setSecure(false); // Set to true if using HTTPS
             cookie.setPath("/");
             cookie.setMaxAge(3600); // 1 hour
-//            cookie.setDomain("localhost");
+            cookie.setDomain("localhost");
 
             response.addCookie(cookie);
 
             // Optional but useful for SameSite=None
-//            response.addHeader("Set-Cookie",
-//                    String.format("authToken=%s; HttpOnly; Path=/; Max-Age=3600; SameSite=None", token));
+            response.addHeader("Set-Cookie",
+                    String.format("authToken=%s; HttpOnly; Path=/; Max-Age=3600; SameSite=None", token));
             redirectAttributes.addFlashAttribute("success", "Logged in successfully! Welcome back.");
             return "redirect:/api/auth/home";
 
@@ -69,6 +70,25 @@ public class AuthController {
     	return "redirect:/api/products/home";
     }
     
-    
-    
+    @GetMapping("/logout")
+    public String logout(HttpServletRequest request, HttpServletResponse response) {
+
+        // Retrieve authenticated user from the request
+        User user = (User) request.getAttribute("authenticatedUser");
+
+        // Delegate logout operation to the service layer
+        if(user != null) {
+        		authService.logout(user);
+        }
+        
+        // Clear the authentication token cookie
+        Cookie cookie = new Cookie("authToken", null);
+        cookie.setHttpOnly(true);
+        cookie.setMaxAge(0);
+        cookie.setPath("/");
+        response.addCookie(cookie);
+
+        return "redirect:/api/auth/login";
+    }
+
 }

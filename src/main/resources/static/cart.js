@@ -347,7 +347,7 @@ function updateCartBadge(count) {
 
 function proceedToCheckout() {
     if (cartData.length === 0) return;
-    window.location.href = '/checkout';
+    window.location.href = '/api/checkout';
 }
 
 function showCartError() {
