@@ -15,7 +15,8 @@
 <nav class="navbar">
     <div class="nav-inner">
 
-        <a href="/api/products/home" class="nav-brand">
+        <!-- Brand — role-aware link -->
+        <a th:href="${role == 'ADMIN'} ? '/api/admin/dashboard' : '/api/products/home'" class="nav-brand">
             <span class="brand-logo">🛒</span>
             <span class="brand-name">ShopNest</span>
         </a>
@@ -32,19 +33,35 @@
                     </svg>
                 </div>
                 <div class="nav-dropdown">
-                    <a href="/api/products/home" class="dropdown-item">
-                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                            <path d="m3 9 9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/>
-                        </svg>
-                        Home
-                    </a>
-                    <a href="/api/view-orders" class="dropdown-item">
-                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                            <path d="M6 2 3 6v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V6l-3-4z"/>
-                            <line x1="3" y1="6" x2="21" y2="6"/>
-                        </svg>
-                        My Orders
-                    </a>
+
+                    <!-- Customer dropdown -->
+                    <th:block th:if="${role == 'CUSTOMER'}">
+                        <a href="/api/products/home" class="dropdown-item">
+                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                <path d="m3 9 9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/>
+                            </svg>
+                            Home
+                        </a>
+                        <a href="/api/view-orders" class="dropdown-item">
+                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                <path d="M6 2 3 6v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V6l-3-4z"/>
+                                <line x1="3" y1="6" x2="21" y2="6"/>
+                            </svg>
+                            My Orders
+                        </a>
+                    </th:block>
+
+                    <!-- Admin dropdown -->
+                    <th:block th:if="${role == 'ADMIN'}">
+                        <a href="/api/admin/dashboard" class="dropdown-item">
+                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                <rect x="3" y="3" width="7" height="7"/><rect x="14" y="3" width="7" height="7"/>
+                                <rect x="14" y="14" width="7" height="7"/><rect x="3" y="14" width="7" height="7"/>
+                            </svg>
+                            Dashboard
+                        </a>
+                    </th:block>
+
                     <div class="dropdown-sep"></div>
                     <a href="/api/auth/logout" class="dropdown-item danger">
                         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
@@ -57,7 +74,8 @@
                 </div>
             </div>
 
-            <a href="/api/cart" class="cart-icon-btn">
+            <!-- Cart icon — customer only -->
+            <a href="/cart" class="cart-icon-btn" th:if="${role == 'CUSTOMER'}">
                 <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
                     <circle cx="9" cy="21" r="1"/><circle cx="20" cy="21" r="1"/>
                     <path d="M1 1h4l2.68 13.39a2 2 0 0 0 2 1.61h9.72a2 2 0 0 0 2-1.61L23 6H6"/>
@@ -71,22 +89,29 @@
         </button>
     </div>
 
+    <!-- Mobile nav — role-aware -->
     <div class="mobile-nav" id="mobileNav">
-        <a href="/api/products/home">Home</a>
-        <a href="/api/view-orders">My Orders</a>
-        <a href="/api/cart">Cart</a>
+        <th:block th:if="${role == 'CUSTOMER'}">
+            <a href="/api/products/home">Home</a>
+            <a href="/api/view-orders">My Orders</a>
+            <a href="/cart">Cart</a>
+        </th:block>
+        <th:block th:if="${role == 'ADMIN'}">
+            <a href="/api/admin/dashboard">Dashboard</a>
+            <a href="/api/admin/products">Products</a>
+            <a href="/api/admin/users">Users</a>
+            <a href="/api/admin/analytics">Analytics</a>
+        </th:block>
         <a href="/api/auth/logout" class="danger">Sign Out</a>
     </div>
 </nav>
 
-<!-- ═══════════════ PAGE BODY ═══════════════ -->
+<!-- ═══════════════ PROFILE CARD ═══════════════ -->
 <main class="page-main">
     <div class="page-center">
-
-        <!-- ── PROFILE CARD ── -->
         <div class="profile-card">
 
-            <!-- Top strip — avatar + name -->
+            <!-- Card top -->
             <div class="card-top">
                 <div class="avatar-ring">
                     <div class="avatar-circle"
@@ -95,7 +120,6 @@
                 <div class="card-top-info">
                     <div class="profile-name-row">
                         <h1 class="profile-name" th:text="${username}">Username</h1>
-                        <!-- Admin badge — only shown to ADMIN users -->
                         <span class="admin-badge" th:if="${role == 'ADMIN'}">
                             <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
                                 <path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/>
@@ -107,10 +131,10 @@
                 </div>
             </div>
 
-            <!-- Bottom — info rows + actions -->
+            <!-- Card body -->
             <div class="card-body">
 
-                <!-- Email row -->
+                <!-- Email -->
                 <div class="info-row">
                     <div class="info-icon">
                         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
@@ -124,7 +148,7 @@
                     </div>
                 </div>
 
-                <!-- Password row -->
+                <!-- Password -->
                 <div class="info-row">
                     <div class="info-icon">
                         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
@@ -161,59 +185,18 @@
                 </div>
 
                 <!-- ── ADMIN ACTIONS ── -->
-                <div class="actions-section admin-actions" th:if="${role == 'ADMIN'}">
-                    <p class="actions-heading">Admin Panel</p>
-                    <a href="/api/admin/products" class="admin-action-btn">
-                        <div class="admin-btn-icon">
-                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                                <path d="M21 16V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16z"/>
-                            </svg>
-                        </div>
-                        <div class="admin-btn-text">
-                            <span class="admin-btn-title">Manage Products</span>
-                            <span class="admin-btn-sub">Add, edit or remove products</span>
-                        </div>
-                        <svg class="admin-btn-arrow" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                            <path d="m9 18 6-6-6-6"/>
+                <div class="actions-section" th:if="${role == 'ADMIN'}" style="flex-direction:column;gap:.75rem">
+                    <a href="/api/admin/dashboard" class="action-btn primary" style="width:100%;justify-content:center">
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                            <rect x="3" y="3" width="7" height="7"/><rect x="14" y="3" width="7" height="7"/>
+                            <rect x="14" y="14" width="7" height="7"/><rect x="3" y="14" width="7" height="7"/>
                         </svg>
-                    </a>
-                    <a href="/api/admin/orders" class="admin-action-btn">
-                        <div class="admin-btn-icon">
-                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                                <path d="M6 2 3 6v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V6l-3-4z"/>
-                                <line x1="3" y1="6" x2="21" y2="6"/>
-                            </svg>
-                        </div>
-                        <div class="admin-btn-text">
-                            <span class="admin-btn-title">View All Orders</span>
-                            <span class="admin-btn-sub">Monitor and manage orders</span>
-                        </div>
-                        <svg class="admin-btn-arrow" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                            <path d="m9 18 6-6-6-6"/>
-                        </svg>
-                    </a>
-                    <a href="/api/admin/users" class="admin-action-btn">
-                        <div class="admin-btn-icon">
-                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                                <path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/>
-                                <circle cx="9" cy="7" r="4"/>
-                                <path d="M23 21v-2a4 4 0 0 0-3-3.87"/>
-                                <path d="M16 3.13a4 4 0 0 1 0 7.75"/>
-                            </svg>
-                        </div>
-                        <div class="admin-btn-text">
-                            <span class="admin-btn-title">Manage Users</span>
-                            <span class="admin-btn-sub">View and manage accounts</span>
-                        </div>
-                        <svg class="admin-btn-arrow" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                            <path d="m9 18 6-6-6-6"/>
-                        </svg>
+                        Go to Admin Dashboard
                     </a>
                 </div>
 
             </div>
         </div>
-
     </div>
 </main>
 

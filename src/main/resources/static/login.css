@@ -2,7 +2,16 @@
    SHOPNEST LOGIN — login.css
    Design: Split-panel, refined dark-green theme
    ============================================ */
+/* Hide Edge/IE native password reveal button */
+input[type="password"]::-ms-reveal,
+input[type="password"]::-ms-clear {
+    display: none;
+}
 
+/* Hide Chrome native password reveal button */
+input[type="password"]::-webkit-credentials-auto-fill-button {
+    display: none;
+}
 :root {
     --primary:       #1f4037;
     --primary-light: #2c5364;

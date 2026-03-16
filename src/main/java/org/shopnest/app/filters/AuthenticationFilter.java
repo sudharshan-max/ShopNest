@@ -22,7 +22,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Component;
 
-@WebFilter(urlPatterns = {"/api/*", "/admin/*", "/cart", "/checkout"})
+@WebFilter(urlPatterns = {"/api/*"})
 public class AuthenticationFilter implements Filter {
 
     private static final Logger logger = LoggerFactory.getLogger(AuthenticationFilter.class);
@@ -112,13 +112,19 @@ public class AuthenticationFilter implements Filter {
         logger.info("Authenticated User: {}, Role: {}",
                 authenticatedUser.getUsername(), role);
 
-        // Role-based access control
-        if (requestURI.startsWith("/admin/") && role != Role.ADMIN) {
-            sendErrorResponse(httpResponse,
-                    HttpServletResponse.SC_FORBIDDEN,
-                    "Forbidden: Admin access required");
-            return;
-        }
+     // Role-based access control
+
+     // Block non-admins from admin pages
+     if (requestURI.startsWith("/api/admin/") && role != Role.ADMIN) {
+         httpResponse.sendRedirect("/api/users/login");
+         return;
+     }
+
+     // Block admins from customer-only pages
+     if (role == Role.ADMIN && isCustomerOnlyPath(requestURI)) {
+         httpResponse.sendRedirect("/api/admin/dashboard");
+         return;
+     }
 
         // ✅ REMOVED the broken customer block — customers CAN access /api/ routes
 
@@ -160,6 +166,14 @@ public class AuthenticationFilter implements Filter {
             "/api/products/home"
         };
         return Arrays.asList(publicPaths).contains(uri);
+    }
+    
+    private boolean isCustomerOnlyPath(String uri) {
+        return  uri.startsWith("/api/cart")
+            || uri.startsWith("/api/checkout")
+            || uri.startsWith("/api/payment/")
+            || uri.startsWith("/api/orders")
+            || uri.startsWith("/api/view-orders");
     }
 
     private void setCORSHeaders(HttpServletResponse response) {
